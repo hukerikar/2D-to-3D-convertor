@@ -2,7 +2,14 @@ import os
 import shutil
 import streamlit as st
 from gradio_client import Client
+import base64
 
+def get_binary_file_downloader_html(file, label='Download'):
+    with open(file, 'rb') as f:
+        data = f.read()
+    b64 = base64.b64encode(data).decode()
+    href = f'<a href="data:file/txt;base64,{b64}" download="{file}">{label}</a>'
+    return href
 # Function to rename and save the uploaded image
 def rename_and_save_image(uploaded_file):
     try:
@@ -50,6 +57,11 @@ if uploaded_file is not None:
     )
     st.write("Preprocess Result:", result)
 
+    # Store the processed image in FuriAR folder with the same name as uploaded image
+    processed_image_path = os.path.join("FuriAR", "image.png")
+    shutil.move(result, processed_image_path)  # Extract the file path from the tuple
+    st.write("Processed Image replaced at:", processed_image_path)
+
     result = client.predict(
         "FuriAR/image.png",  # filepath  in 'Processed Image' Image component
         256,                 # Marching Cubes Resolution
@@ -81,3 +93,16 @@ if uploaded_file is not None:
                 st.error(f"Error moving file: {e}")
         else:
             st.error(f"File not found: {result_path}")
+    # Automatically download the processed image and .glb model
+    if os.path.exists(processed_image_path):
+        st.markdown(get_binary_file_downloader_html('image.png', 'Processed Image'), unsafe_allow_html=True)
+    else:
+        st.warning("Processed image not found for download.")
+
+    glb_files = [f for f in os.listdir(glb_folder) if f.endswith('.glb')]
+    if glb_files:
+        for glb_file in glb_files:
+            glb_file_path = os.path.join(glb_folder, glb_file)
+            st.markdown(get_binary_file_downloader_html(glb_file, glb_file), unsafe_allow_html=True)
+    else:
+        st.warning("No .glb files found for download.")
