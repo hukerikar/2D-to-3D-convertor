@@ -58,7 +58,7 @@ if uploaded_file is not None:
 
     # Store the processed image in FuriAR folder with the same name as uploaded image
     processed_image_path = os.path.join("FuriAR", "image.png")
-    shutil.move(result[0], processed_image_path)  # Extract the file path from the tuple
+    shutil.move(result, processed_image_path)  # Extract the file path from the tuple
     st.write("Processed Image replaced at:", processed_image_path)
 
     result = client.predict(
