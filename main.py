@@ -57,16 +57,24 @@ if uploaded_file is not None:
     )
     st.write("Generate Result:", result)
 
-    # Create a subfolder within the "Model" directory to store the files
-    model_folder = os.path.join("Model", "3D_Models")
-    os.makedirs(model_folder, exist_ok=True)
+    # Create subfolders within the "Model" directory to store the files
+    glb_folder = os.path.join("Model", "GLB")
+    obj_folder = os.path.join("Model", "OBJ")
+    os.makedirs(glb_folder, exist_ok=True)
+    os.makedirs(obj_folder, exist_ok=True)
 
-    # Move each result to the subfolder within the "Model" directory
+    # Move each result to the corresponding subfolder within the "Model" directory
     for i, result_path in enumerate(result):
         if os.path.exists(result_path):
             try:
                 filename = os.path.basename(result_path)
-                destination_path = os.path.join(model_folder, filename)
+                if filename.lower().endswith('.glb'):
+                    destination_path = os.path.join(glb_folder, filename)
+                elif filename.lower().endswith('.obj'):
+                    destination_path = os.path.join(obj_folder, filename)
+                else:
+                    st.error(f"Unsupported file format: {filename}")
+                    continue
                 shutil.move(result_path, destination_path)
                 st.write(f"Result {i+1} moved to: {destination_path}")
             except Exception as e:
