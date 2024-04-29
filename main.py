@@ -57,7 +57,7 @@ def rename_and_save_image(uploaded_file):
         return f"Error renaming and saving image: {e}"
 
 # Streamlit UI
-st.title("Upload Image and Process")
+st.title("FURI-AR")
 
 # Upload or drag and drop an image file
 uploaded_file = st.file_uploader("Upload an Image File", type=["jpg", "jpeg", "png"])
@@ -138,3 +138,4 @@ if uploaded_file is not None:
             st.markdown(get_binary_file_downloader_html(glb_file_data, glb_file, f'Download {glb_file}'), unsafe_allow_html=True)
     else:
         st.warning("No .glb files found for download.")
+    st.write("Thanks for visiting (~ from Srujan Hukerikar)")
