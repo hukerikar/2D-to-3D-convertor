@@ -3,12 +3,37 @@ import shutil
 import streamlit as st
 from gradio_client import Client
 import base64
-def clear_cache():
-  keys = list(st.session_state.keys())
-  for key in keys:
-    st.session_state.pop(key)
+import os
+import shutil
+import streamlit as st
 
-st.button('Clear Cache', on_click=clear_cache)
+def clear_model_folders():
+    glb_folder = "Model/GLB"
+    obj_folder = "Model/OBJ"
+    
+    # Remove all files inside the GLB folder
+    for file_name in os.listdir(glb_folder):
+        file_path = os.path.join(glb_folder, file_name)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            st.error(f"Failed to delete {file_path}: {e}")
+    
+    # Remove all files inside the OBJ folder
+    for file_name in os.listdir(obj_folder):
+        file_path = os.path.join(obj_folder, file_name)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            st.error(f"Failed to delete {file_path}: {e}")
+
+# Create a button to clear the model folders
+if st.button("Clear"):
+    clear_model_folders()
+    st.success("Model folders cleared successfully!")
+
 def get_binary_file_downloader_html(data, file_name, button_label):
     b64 = base64.b64encode(data).decode()
     href = f'<a href="data:file/txt;base64,{b64}" download="{file_name}">{button_label}</a>'
