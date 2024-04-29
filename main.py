@@ -3,6 +3,7 @@ import shutil
 import streamlit as st
 from gradio_client import Client
 import base64
+st.experimental_clear_cache()
 
 def get_binary_file_downloader_html(data, file_name, button_label):
     b64 = base64.b64encode(data).decode()
